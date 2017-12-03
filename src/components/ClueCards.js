@@ -19,7 +19,9 @@ class ClueCards extends Component {
           return (
             <li className="img-hover" key={index}>
               <ClueCard
-                card={card}/> <a onClick={() => {this.props.execute(card, 0, this.props.card + 's')}}>{this.props.label}</a>
+                card={card}/> <a onClick={() => {
+                  this.props.execute(card, 0, this.props.card + 's')
+                }}>{this.props.label}</a>
             </li>
           );
         })}

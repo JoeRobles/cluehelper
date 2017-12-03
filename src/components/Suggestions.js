@@ -5,7 +5,6 @@ class Suggestions extends Component {
   render() {
     return (
       <div className="row">
-
         <div className="table-responsive">
           <table className="table table-bordered">
             <thead>
@@ -23,7 +22,6 @@ class Suggestions extends Component {
                 <td className="text-center"><button onClick={this.props.add} className="btn btn-primary">Add</button></td>
                 <td>
                   <select name="whos" onChange={this.props.whos}>
-                    <option>None</option>
                     {this.props.players.map((player, index) => {
                       return (
                         <option value={index} key={index}>{player.name}</option>
@@ -33,7 +31,6 @@ class Suggestions extends Component {
                 </td>
                 <td>
                   <select name="room" onChange={this.props.room}>
-                    <option>None</option>
                     {this.props.rooms.map((room, index) => {
                       return (
                         <option value={index} key={index}>{room.name}</option>
@@ -43,7 +40,6 @@ class Suggestions extends Component {
                 </td>
                 <td>
                   <select name="suspect" onChange={this.props.suspect}>
-                    <option>None</option>
                     {this.props.suspects.map((suspect, index) => {
                       return (
                         <option value={index} key={index}>{suspect.name}</option>
@@ -53,7 +49,6 @@ class Suggestions extends Component {
                 </td>
                 <td>
                   <select name="weapon" onChange={this.props.weapon}>
-                    <option>None</option>
                     {this.props.weapons.map((weapon, index) => {
                       return (
                         <option value={index} key={index}>{weapon.name}</option>
@@ -62,14 +57,25 @@ class Suggestions extends Component {
                   </select>
                 </td>
                 <td>
-                  <select name="who" onChange={this.props.who}>
-                    <option>None</option>
-                    {this.props.players.map((player, index) => {
-                      return (
-                        <option value={index} key={index}>{player.name}</option>
-                      );
-                    })}
-                  </select>
+                  <input
+                    id="is-wrong"
+                    type="checkbox"
+                    onChange={this.props.updateWrong}
+                    checked={this.props.wrong}/>
+                  <label
+                    htmlFor="is-wrong">Is wrong</label>
+                  {
+                    (this.props.wrong) ?
+                    <select name="who" onChange={this.props.who}>
+                      <option>None</option>
+                      {this.props.players.map((player, index) => {
+                        return (
+                          <option value={index} key={index}>{player.name}</option>
+                        );
+                      })}
+                    </select> :
+                    null
+                  }
                 </td>
               </tr>
               {this.props.suggestions.map((suggestion, index) => {

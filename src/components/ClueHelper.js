@@ -3,6 +3,7 @@ import AddPlayer from './AddPlayer';
 import KnownCards from './KnownCards';
 import RemainCards from './RemainCards';
 import Suggestions from './Suggestions';
+import $ from 'jquery';
 import {
   THE_ROOMS,
   THE_SUSPECTS,
@@ -70,30 +71,8 @@ class ClueHelper extends Component {
       this.theWeapons.trophy,
       this.theWeapons.poison,
     ];
-    this.players = [
-      ME,
-      {
-        name: 'Tim',
-        rooms: [],
-        suspects: [],
-        weapons: [],
-      },
-      {
-        name: 'Ronald',
-        rooms: [],
-        suspects: [],
-        weapons: [],
-      }];
-    this.suggestions = [{
-      room: this.theRooms.dining,
-      suspect: this.theSuspects.green,
-      weapon: this.theWeapons.axe,
-      whos: this.players[0],
-      wrong: {
-        is: true,
-        who: this.players[0]
-      }
-    }];
+    this.players = [ME];
+    this.suggestions = [];
     this.state = {
       player: {},
       players: this.players,
@@ -105,7 +84,8 @@ class ClueHelper extends Component {
       weapons: this.weapons,
       weapon: {},
       who: {},
-      whos: {}
+      whos: {},
+      wrong: false
     };
     this.addPlayer = this.addPlayer.bind(this);
     this.addCard = this.addCard.bind(this);
@@ -117,6 +97,7 @@ class ClueHelper extends Component {
     this.updateWeapon = this.updateWeapon.bind(this);
     this.updateWho = this.updateWho.bind(this);
     this.updateWhos = this.updateWhos.bind(this);
+    this.updateWrong = this.updateWrong.bind(this);
   }
 
   updatePlayerName(event) {
@@ -124,9 +105,9 @@ class ClueHelper extends Component {
       this.setState({
         player: {
           name: event.target.value,
+          rooms: [],
           suspects: [],
           weapons: [],
-          rooms: []
         }
       });
     }
@@ -154,15 +135,18 @@ class ClueHelper extends Component {
   }
 
   updateWho(event) {
-    this.setState({who: this.players[event.target.value]});
+    this.setState({who: this.state.players[event.target.value]});
   }
 
   updateWhos(event) {
-    console.log('event.target.value');
-    console.log(event.target.value);
-    console.log('updateWhos');
-    console.log(this.players[event.target.value]);
-    this.setState({whos: this.players[event.target.value]});
+    this.setState({whos: this.state.players[event.target.value]});
+  }
+
+  updateWrong(event) {
+    this.setState({
+      wrong: event.target.checked,
+      who: {}
+    });
   }
 
   addCard(card, player, label) {
@@ -193,14 +177,17 @@ class ClueHelper extends Component {
     }
   }
 
-  addSuggestion(){
+  addSuggestion() {
+    let wrong = true;
+    if (this.state.wrong && $.isEmptyObject(this.state.who)) {
+      wrong = false;
+    }
     if (
-      typeof this.state.room === 'object' &&
-      typeof this.state.suspect === 'object' &&
-      typeof this.state.weapon === 'object' &&
-      typeof this.state.wrong === 'object' &&
-      typeof this.state.who === 'object' &&
-      typeof this.state.whos === 'object'
+      !$.isEmptyObject(this.state.room) &&
+      !$.isEmptyObject(this.state.suspect) &&
+      !$.isEmptyObject(this.state.weapon) &&
+      !$.isEmptyObject(this.state.whos) &&
+      wrong
     ) {
       let suggestion = {
         room: this.state.room,
@@ -238,6 +225,7 @@ class ClueHelper extends Component {
         />
         <Suggestions
           add={this.addSuggestion}
+          updateWrong={this.updateWrong}
           players={this.state.players}
           rooms={this.allRooms}
           room={this.updateRoom}
@@ -247,7 +235,8 @@ class ClueHelper extends Component {
           weapons={this.allWeapons}
           weapon={this.updateWeapon}
           who={this.updateWho}
-          whos={this.updateWhos}/>
+          whos={this.updateWhos}
+          wrong={this.state.wrong}/>
       </div>
     );
   }
