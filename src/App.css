@@ -32,37 +32,34 @@ body {
   to { transform: rotate(360deg); }
 }
 
-.players-list {
+.items-list {
   list-style: none;
 }
-
-.rooms-list {
-  list-style: none;
+ul.items-list {
+  padding-left: 0px;
 }
-
-.suspects-list {
-  list-style: none;
-}
-
-.weapons-list {
-  list-style: none;
-}
-
-.room {
+.card {
   height: 25px;
   width: 25px;
-}
-
-.suspect {
-  height: 25px;
-  width: 25px;
-}
-
-.weapon {
-  height: 25px;
-  width: 44px;
 }
 
 a {
   cursor: pointer;
+}
+
+.img-hover img {
+  -webkit-transition: all .1s ease; /* Safari and Chrome */
+  -moz-transition: all .1s ease; /* Firefox */
+  -o-transition: all .1s ease; /* IE 9 */
+  -ms-transition: all .1s ease; /* Opera */
+  transition: all .1s ease;
+}
+.img-hover img:hover {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform:translateZ(0) scale(5); /* Safari and Chrome */
+  -moz-transform:scale(5); /* Firefox */
+  -ms-transform:scale(5); /* IE 9 */
+  -o-transform:translatZ(0) scale(5); /* Opera */
+  transform:translatZ(0) scale(5);
 }

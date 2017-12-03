@@ -1,110 +1,45 @@
 import React, {Component} from 'react';
+import AddPlayer from './AddPlayer';
+import KnownCards from './KnownCards';
+import RemainCards from './RemainCards';
+import Suggestions from './Suggestions';
+import {
+  THE_ROOMS,
+  THE_SUSPECTS,
+  THE_WEAPONS,
+  ME
+} from './repository';
 
 class ClueHelper extends Component {
   constructor(props) {
     super(props);
-    this.theRooms = {
-      kitchen: {
-        id: 'kitchen',
-        name: 'Cocina'
-      },
-      dining: {
-        id: 'dining',
-        name: 'Comedor'
-      },
-      guest: {
-        id: 'guest',
-        name: 'Habitación de huéspedes'
-      },
-      observatory: {
-        id: 'observatory',
-        name: 'Observatorio'
-      },
-      yard: {
-        id:'yard',
-        name: 'Patio'
-      },
-      living: {
-        id: 'living',
-        name: 'Sala'
-      },
-      spa: {
-        id: 'spa',
-        name: 'Spa'
-      },
-      theater: {
-        id: 'theater',
-        name: 'Teatro'
-      },
-      hall: {
-        id: 'hall',
-        name: 'Vestíbulo'
-      },
-    };
-    this.theSuspects = {
-      peacock: {
-        id: 'peacock',
-        name: 'Señora Azulino'
-      },
-      white: {
-        id: 'white',
-        name: 'Señora Blanco'
-      },
-      scarlet: {
-        id: 'scarlet',
-        name: 'Señorita Escarlata'
-      },
-      plum: {
-        id: 'plum',
-        name: 'Profesor Moradillo'
-      },
-      mustard: {
-        id: 'mustard',
-        name: 'Entrenador Mostaza'
-      },
-      green: {
-        id: 'green',
-        name: 'Señor Verdi'
-      },
-    };
-    this.theWeapons = {
-      bat: {
-        id: 'bat',
-        name: 'Bate'
-      },
-      candlestick: {
-        id: 'candlestick',
-        name: 'Candelabro'
-      },
-      knife: {
-        id: 'knife',
-        name: 'Cuchillo'
-      },
-      rope: {
-        id: 'rope',
-        name: 'Cuerda'
-      },
-      axe: {
-        id: 'axe',
-        name: 'Hacha'
-      },
-      wrench: {
-        id: 'wrench',
-        name: 'Pesas'
-      },
-      gun: {
-        id: 'gun',
-        name: 'Pistola'
-      },
-      trophy: {
-        id: 'trophy',
-        name: 'Trofeo'
-      },
-      poison: {
-        id: 'poison',
-        name: 'Veneno'
-      },
-    };
+    this.theRooms = THE_ROOMS;
+    this.theSuspects = THE_SUSPECTS;
+    this.theWeapons = THE_WEAPONS;
+    let rooms = [];
+    for (let key in this.theRooms) {
+      if (this.theRooms.hasOwnProperty(key)) {
+        rooms.push(this.theRooms[key]);
+      }
+    }
+
+    let suspects = [];
+    for (let key in this.theSuspects) {
+      if (this.theSuspects.hasOwnProperty(key)) {
+        suspects.push(this.theSuspects[key]);
+      }
+    }
+
+    let weapons = [];
+    for (let key in this.theWeapons) {
+      if (this.theWeapons.hasOwnProperty(key)) {
+        weapons.push(this.theWeapons[key]);
+      }
+    }
+    this.allRooms = rooms;
+    this.allSuspects = suspects;
+    this.allWeapons = weapons;
+
     this.rooms = [
       this.theRooms.kitchen,
       this.theRooms.dining,
@@ -136,51 +71,65 @@ class ClueHelper extends Component {
       this.theWeapons.poison,
     ];
     this.players = [
+      ME,
       {
-        name: 'Me',
+        name: 'Tim',
         rooms: [],
         suspects: [],
         weapons: [],
-      }
-    ];
-    this.suggestions = [
+      },
       {
-        whos: this.players[2],
-        room: this.rooms[2],
-        weapon: this.theWeapons.wrench,
-        suspect: this.theSuspects.peacock,
-        wrong: {
-          is: true,
-          who: this.players[3]
-        }
+        name: 'Ronald',
+        rooms: [],
+        suspects: [],
+        weapons: [],
+      }];
+    this.suggestions = [{
+      room: this.theRooms.dining,
+      suspect: this.theSuspects.green,
+      weapon: this.theWeapons.axe,
+      whos: this.players[0],
+      wrong: {
+        is: true,
+        who: this.players[0]
       }
-    ];
+    }];
     this.state = {
-      rooms: this.rooms,
-      suspects: this.suspects,
-      weapons: this.weapons,
-      players: this.players,
       player: {},
+      players: this.players,
+      rooms: this.rooms,
+      room: {},
+      suggestions: this.suggestions,
+      suspects: this.suspects,
+      suspect: {},
+      weapons: this.weapons,
+      weapon: {},
+      who: {},
+      whos: {}
     };
-    this.updatePlayerName = this.updatePlayerName.bind(this);
     this.addPlayer = this.addPlayer.bind(this);
-    this.addRoom = this.addRoom.bind(this);
-    this.removeRoom = this.removeRoom.bind(this);
-    this.addSuspect = this.addSuspect.bind(this);
-    this.removeSuspect = this.removeSuspect.bind(this);
-    this.addWeapon = this.addWeapon.bind(this);
-    this.removeWeapon = this.removeWeapon.bind(this);
+    this.addCard = this.addCard.bind(this);
+    this.addSuggestion = this.addSuggestion.bind(this);
+    this.removeCard = this.removeCard.bind(this);
+    this.updatePlayerName = this.updatePlayerName.bind(this);
+    this.updateRoom = this.updateRoom.bind(this);
+    this.updateSuspect = this.updateSuspect.bind(this);
+    this.updateWeapon = this.updateWeapon.bind(this);
+    this.updateWho = this.updateWho.bind(this);
+    this.updateWhos = this.updateWhos.bind(this);
   }
 
   updatePlayerName(event) {
-    this.setState({
-      player: {
-        name: event.target.value,
-        suspects: [],
-        weapons: [],
-        rooms: []
-      }
-    });
+    if (event.target.value !== '') {
+      this.setState({
+        player: {
+          name: event.target.value,
+          suspects: [],
+          weapons: [],
+          rooms: []
+        }
+      });
+    }
   }
 
   addPlayer() {
@@ -192,260 +141,113 @@ class ClueHelper extends Component {
     }
   }
 
-  addRoom(room, player) {
-    let rooms = this.state.rooms;
-    let index = rooms.indexOf(room);
-    if (index > -1) {
-      rooms.splice(index, 1);
-      this.setState({
-        rooms: rooms
-      });
+  updateRoom(event) {
+    this.setState({room: this.allRooms[event.target.value]});
+  }
 
-      let playerRooms = this.players[player].rooms;
-      playerRooms.push(room);
-      this.players[player].rooms.concat(playerRooms);
+  updateSuspect(event) {
+    this.setState({suspect: this.allSuspects[event.target.value]});
+  }
+
+  updateWeapon(event) {
+    this.setState({weapon: this.allWeapons[event.target.value]});
+  }
+
+  updateWho(event) {
+    this.setState({who: this.players[event.target.value]});
+  }
+
+  updateWhos(event) {
+    console.log('event.target.value');
+    console.log(event.target.value);
+    console.log('updateWhos');
+    console.log(this.players[event.target.value]);
+    this.setState({whos: this.players[event.target.value]});
+  }
+
+  addCard(card, player, label) {
+    let cards = this.state[label];
+    let index = cards.indexOf(card);
+    if (index > -1) {
+      cards.splice(index, 1);
+      let state = [];
+      state[label] = cards;
+      this.setState(state);
+
+      let playerCards = this.players[player][label];
+      playerCards.push(card);
+      this.players[player][label].concat(playerCards);
     }
   }
 
-  removeRoom(room, player){
-    let playerRooms = this.players[player].rooms;
-    let index = playerRooms.indexOf(room);
+  removeCard(card, player, label) {
+    let playerCards = this.players[player][label];
+    let index = playerCards.indexOf(card);
     if (index > -1) {
-      playerRooms.splice(index, 1);
-      this.players[player].rooms = playerRooms;
+      playerCards.splice(index, 1);
+      this.players[player][label] = playerCards;
 
-      this.setState({
-        rooms: this.state.rooms.concat(room)
-      });
+      let state = [];
+      state[label] = this.state[label].concat(card);
+      this.setState(state);
     }
   }
 
-  addSuspect(suspect, player) {
-    let suspects = this.state.suspects;
-    let index = suspects.indexOf(suspect);
-    if (index > -1) {
-      suspects.splice(index, 1);
+  addSuggestion(){
+    if (
+      typeof this.state.room === 'object' &&
+      typeof this.state.suspect === 'object' &&
+      typeof this.state.weapon === 'object' &&
+      typeof this.state.wrong === 'object' &&
+      typeof this.state.who === 'object' &&
+      typeof this.state.whos === 'object'
+    ) {
+      let suggestion = {
+        room: this.state.room,
+        suspect: this.state.suspect,
+        weapon: this.state.weapon,
+        whos: this.state.whos,
+        wrong: {
+          is: this.state.wrong,
+          who: this.state.who
+        }
+      };
       this.setState({
-        suspects: suspects
-      });
-
-      let playerSuspects = this.players[player].suspects;
-      playerSuspects.push(suspect);
-      this.players[player].suspects.concat(playerSuspects);
-    }
-  }
-
-  removeSuspect(suspect, player){
-    let playerSuspects = this.players[player].suspects;
-    let index = playerSuspects.indexOf(suspect);
-    if (index > -1) {
-      playerSuspects.splice(index, 1);
-      this.players[player].suspects = playerSuspects;
-
-      this.setState({
-        suspects: this.state.suspects.concat(suspect)
-      });
-    }
-  }
-
-  addWeapon(weapon, player) {
-
-    let weapons = this.state.weapons;
-    let index = weapons.indexOf(weapon);
-    if (index > -1) {
-      weapons.splice(index, 1);
-      this.setState({
-        weapons: weapons
-      });
-
-      let playerWeapons = this.players[player].weapons;
-      playerWeapons.push(weapon);
-      this.players[player].weapons.concat(playerWeapons);
-    }
-  }
-
-  removeWeapon(weapon, player){
-    let playerWeapons = this.players[player].weapons;
-    let index = playerWeapons.indexOf(weapon);
-    if (index > -1) {
-      playerWeapons.splice(index, 1);
-      this.players[player].weapons = playerWeapons;
-
-      this.setState({
-        weapons: this.state.weapons.concat(weapon)
+        suggestions: this.state.suggestions.concat(suggestion)
       });
     }
   }
 
   render() {
     return (
-      <div className="container">
-        <nav className="navbar navbar-fixed-top navbar-inverse">
-          <div className="navbar-header">
-            <button
-              type="button"
-              className="navbar-toggle collapsed"
-              data-toggle="collapse"
-              data-target="#navbar"
-              aria-expanded="false"
-              aria-controls="navbar">
-              <span className="sr-only">Toggle navigation</span>
-              <span className="icon-bar"></span>
-              <span className="icon-bar"></span>
-              <span className="icon-bar"></span>
-            </button>
-            <a className="navbar-brand">Cluedo Helper</a>
-          </div>
-          <div id="navbar" className="collapse navbar-collapse">
-            <ul className="nav navbar-nav"></ul>
-          </div>
-        </nav>
-        <div className="row">
-          <ul className="rooms-list col-xs-4">
-            <li className="text-center"><strong>ROOMS</strong></li>
-            {
-              this.state.rooms.map((room, index) => {
-                return (
-                  <li key={index}>
-                    <img
-                      alt={room.id + ' image'}
-                      className="room"
-                     src={'images/' + room.id + '.png'}
-                    />{room.name} <a onClick={() => {this.addRoom(room, 0)}}>Me</a>
-                  </li>
-                );
-              })
-            }
-          </ul>
-          <ul className="suspects-list col-xs-4">
-            <li className="text-center"><strong>SUSPECTS</strong></li>
-            {
-              this.state.suspects.map((suspect, index) => {
-                return (
-                  <li key={index}>
-                    <img
-                      alt={suspect.id + ' image'}
-                      className="suspect"
-                      src={'images/' + suspect.id + '.png'}
-                    />{suspect.name} <a onClick={() => {this.addSuspect(suspect, 0)}}>Me</a>
-                  </li>
-                );
-              })
-            }
-          </ul>
-          <ul className="weapons-list col-xs-4">
-            <li className="text-center"><strong>WEAPONS</strong></li>
-            {
-              this.state.weapons.map((weapon, index) => {
-                return (
-                  <li key={index}>
-                    <img
-                      alt={weapon.id + ' image'}
-                      className="weapon"
-                      src={'images/' + weapon.id + '.png'}
-                    />{weapon.name} <a onClick={() => {this.addWeapon(weapon, 0)}}>Me</a>
-                  </li>
-                );
-              })
-            }
-          </ul>
-        </div>
-        <div className="row">
-          <div className="input-group">
-            <input
-              className="form-control"
-              placeholder="Enter player's name"
-              type="text"
-              onChange={this.updatePlayerName}
-              value={this.state.player.name}
-            />
-            {
-              (this.state.players.indexOf(this.state.player) === -1) ?
-              <span className="input-group-btn">
-                <button
-                  className="btn btn-primary"
-                  onClick={this.addPlayer}
-                  type="button">Add</button>
-              </span> :
-              null
-            }
-          </div>
-        </div>
-        <div className="row">
-          <div className="table-responsive">
-            <table className="table table-bordered">
-              <thead>
-                <tr>
-                  <th className="text-center">#</th>
-                  <th className="text-center">Name</th>
-                  <th className="text-center">Rooms</th>
-                  <th className="text-center">Suspects</th>
-                  <th className="text-center">Weapons</th>
-                </tr>
-              </thead>
-              <tbody>
-                {
-                  this.state.players.map((player, index) => {
-                    return (
-                      <tr key={index}>
-                        <th className="text-center">{index + 1}</th>
-                        <td>{player.name}</td>
-                        <td>
-                          <ul className="rooms-list">
-                            {player.rooms.map((room, index) => {
-                              return (
-                                <li key={index}>
-                                  <img
-                                    alt={room.id + ' image'}
-                                    className="room"
-                                    src={'images/' + room.id + '.png'}
-                                  />{room.name} <a onClick={() => {this.removeRoom(room, 0)}}>Remove</a>
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        </td>
-                        <td>
-                          <ul className="suspects-list">
-                            {player.suspects.map((suspect, index) => {
-                              return (
-                                <li key={index}>
-                                  <img
-                                    alt={suspect.id + ' image'}
-                                    className="suspect"
-                                    src={'images/' + suspect.id + '.png'}
-                                  />{suspect.name} <a onClick={() => {this.removeSuspect(suspect, 0)}}>Remove</a>
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        </td>
-                        <td>
-                          <ul className="weapons-list">
-                            {player.weapons.map((weapon, index) => {
-                              return (
-                                <li key={index}>
-                                  <img
-                                    alt={weapon.id + ' image'}
-                                    className="weapon"
-                                    src={'images/' + weapon.id + '.png'}
-                                  />{weapon.name} <a onClick={() => {this.removeWeapon(weapon, 0)}}>Remove</a>
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        </td>
-                      </tr>
-                    );
-                  })
-                }
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div className="row">
-          Suggestion
-        </div>
+      <div>
+        <RemainCards
+          execute={this.addCard}
+          rooms={this.state.rooms}
+          suspects={this.state.suspects}
+          weapons={this.state.weapons}/>
+        <AddPlayer
+          onChange={this.updatePlayerName}
+          onClick={this.addPlayer}
+          player={this.state.player}
+          players={this.state.players}
+        />
+        <KnownCards
+          players={this.state.players}
+          execute={this.removeCard}
+        />
+        <Suggestions
+          add={this.addSuggestion}
+          players={this.state.players}
+          rooms={this.allRooms}
+          room={this.updateRoom}
+          suggestions={this.state.suggestions}
+          suspects={this.allSuspects}
+          suspect={this.updateSuspect}
+          weapons={this.allWeapons}
+          weapon={this.updateWeapon}
+          who={this.updateWho}
+          whos={this.updateWhos}/>
       </div>
     );
   }
